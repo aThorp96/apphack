@@ -22,7 +22,6 @@ public class GameMap implements InputProcessor{
 	
 	private HashSet<Integer> pressedKeys;
 	
-	Hero hero;
 	int maxNumOfHostiles = 15;
 	
 	public GameMap(Vector2 mapSize) {

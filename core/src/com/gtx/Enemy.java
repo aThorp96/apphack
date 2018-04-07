@@ -16,6 +16,8 @@ public class Enemy extends Entity {
 	protected int direction;
 	protected double frame;
 	
+	private static final float ATTACK_RATE = 1; // in seconds
+	
 	public Enemy(Vector2 position, Vector2 size, EntityType entityType) {
 		super(position, size, entityType, new Weapon(1, false));
 		direction = 3;
@@ -34,6 +36,8 @@ public class Enemy extends Entity {
 		batch.draw(entityType.getTextures()[(int) frame][direction], position.x - size.x/2, position.y - size.x/2, size.x, size.y);
 	}
 
+	
+	float timeSinceLastAttack = 10000f;
 	public void update(float deltaTime, GameMap map) {
 		Hero hero = map.getHero();
 		Vector2 toHero = new Vector2(hero.position);
@@ -45,9 +49,12 @@ public class Enemy extends Entity {
 		} else {
 			velocity.set(new Vector2());
 		}
-		if (distanceToHero < Weapon.SWORD_LENGTH) {
+		if (distanceToHero < Weapon.SWORD_LENGTH && timeSinceLastAttack < ATTACK_RATE) {
 			weapon.attack(position, toHero, map.getHero());
 			System.out.println(distanceToHero + ", " + map.getHero().hp);
+			timeSinceLastAttack = 0;
+		}else {
+			timeSinceLastAttack += deltaTime;
 		}
 		
 		super.update(deltaTime, map);
