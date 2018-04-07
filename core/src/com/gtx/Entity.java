@@ -1,0 +1,32 @@
+package com.gtx;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+
+public class Entity extends GameObject{
+
+	protected EntityType entityType;
+	protected Vector2 velocity;
+	
+	public Entity(Vector2 position, Vector2 size, EntityType entityType) {
+		super(position, size);
+		this.entityType = entityType;
+		this.velocity = new Vector2();
+	}
+
+	@Override
+	public void render(SpriteBatch batch) {
+		//note, this is getting the first tile
+		//I am leaving room for animations
+		batch.draw(entityType.getTextures()[0][0], position.x - size.x/2, position.y - size.x/2, size.x, size.y);
+	}
+
+	public EntityType getEntityType() {
+		return entityType;
+	}
+	
+	public void update(float deltaTime) {
+		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+	}
+	
+}
