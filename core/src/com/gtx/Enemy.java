@@ -1,6 +1,7 @@
 package com.gtx;
 
 import java.lang.Math;
+import java.util.Random;
 import java.util.Collection;
 
 import com.badlogic.gdx.Gdx;
@@ -35,7 +36,8 @@ public class Enemy extends Entity {
 
 	public void update(float deltaTime, GameMap map) {
 		super.update(deltaTime, map);
-		// Determine which quartile the player is moving in.
+		move();
+		// Determine which quartile the enemy is moving in.
 		double angle = Math.toDegrees(Math.atan2(velocity.y, velocity.x));
 		if (angle == 0 && velocity.x == 0) {
 			direction = 3;
@@ -49,6 +51,14 @@ public class Enemy extends Entity {
 			direction = 2; // down
 		}
 	
+	}
+	
+	public void move() {
+		Random r = new Random();
+		int rand = r.nextInt(4);
+		
+		
+		
 	}
 	
 }
