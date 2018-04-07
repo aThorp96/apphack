@@ -2,6 +2,7 @@ package com.gtx;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -12,6 +13,48 @@ import com.badlogic.gdx.math.Vector2;
 public class MapGenerator {
 	
 	private static Random rand;
+	
+	public static Collection<Entity> placeEntities(Tile[][] map, Hero hero, int maxNumberOfHostiles) {
+		int width = map[0].length;
+		int height = map.length;
+		
+		TileType[][] tileMap = new TileType[height][width];
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				tileMap[row][col] = map[row][col].tileType;				
+			}
+		}
+		
+		boolean[][] spawns = findValidSpawns(tileMap);
+		List<Vector2> positions = new ArrayList<Vector2>();
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				if (spawns[row][col])
+					positions.add( new Vector2(col, row) );
+			}
+		}
+		
+		System.out.println(positions.size());
+		Collections.shuffle(positions);
+		Vector2 tilePos = positions.remove(positions.size()-1);
+		
+		hero.setPosition( map[(int)tilePos.y][(int)tilePos.x].position );
+		
+		Collection<Entity> entities = new ArrayList<Entity>();
+		entities.add(hero);
+		
+		int numHostiles = 0;
+		while (!positions.isEmpty()) {
+			Vector2 position = positions.remove(positions.size()-1);
+			if (numHostiles > maxNumberOfHostiles) {
+				break;
+			}
+			entities.add( new Entity( map[(int)position.y][(int)position.x].position, new Vector2(.5f,.5f), EntityType.GOBLIN ) );
+			numHostiles++;	
+		}
+		
+		return entities;
+	}
 	
 	public static Tile[][] generateMap(int mapWidth, int mapHeight, int seed) {
 		
@@ -28,9 +71,9 @@ public class MapGenerator {
 				TileType[][] map = new TileType[mapHeight][mapWidth];
 				
 				
-				Vector2 minRoomSize = new Vector2( 3,3 );
-				Vector2 maxRoomSize = new Vector2( 7,7 );
-				int numTriesToPlaceRoom = 50;
+				Vector2 minRoomSize = new Vector2( 4,4 );
+				Vector2 maxRoomSize = new Vector2( 8,8 );
+				int numTriesToPlaceRoom = 150;
 				
 				int numTriesToPlaceMaze = 10;
 				
@@ -74,6 +117,23 @@ public class MapGenerator {
 		}
 		
 		return ret;
+	}
+	
+	private static boolean[][] findValidSpawns(TileType[][] map) {
+		int width = map[0].length;
+		int height = map.length;
+		
+		boolean[][] tiles = findTiles(map, TileType.GROUND);
+		boolean[][] rtiles = new boolean[height][width];
+
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				if (tiles[row][col] && numValidSurroundingPos( new Vector2(col, row) , width, height, tiles) >= 3)
+					rtiles[row][col] = true;
+			}
+		}
+		
+		return rtiles;
 	}
 	
 	private static void drawBorder(TileType[][] map, TileType type) {
@@ -275,7 +335,7 @@ public class MapGenerator {
 		
 		for (int row = 0; row < height; row++) {
 			for (int col = 0; col < width; col++) {
-				if (numValidSurroundingPos( new Vector2(col, row) , width, height, floorTiles) >= 3)
+				if (floorTiles[row][col] == true && numValidSurroundingPos( new Vector2(col, row) , width, height, floorTiles) == 3)
 					roomTiles[row][col] = true;
 			}
 		}
