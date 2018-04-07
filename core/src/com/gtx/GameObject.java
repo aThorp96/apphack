@@ -19,6 +19,10 @@ public abstract class GameObject {
 		return position;
 	}
 
+	public void setPosition(Vector2 position) {
+		this.position = position;
+	}
+
 	public Vector2 getSize() {
 		return size;
 	}
