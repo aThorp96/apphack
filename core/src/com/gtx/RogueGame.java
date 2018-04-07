@@ -37,6 +37,7 @@ public class RogueGame extends ApplicationAdapter {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		
 		gameMap.update(deltaTime);
+		update();
 		
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -58,4 +59,9 @@ public class RogueGame extends ApplicationAdapter {
 	public void dispose() {
 		batch.dispose();
 	}
+	
+	private void update() {
+		
+	}
+	
 }
