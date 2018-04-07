@@ -2,9 +2,11 @@ package com.gtx;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -14,6 +16,9 @@ public class RogueGame extends ApplicationAdapter {
 	OrthographicCamera ui;
 	Texture overlay;
 
+	private BitmapFont font;
+    
+    
 	public static OrthographicCamera camera;
 	public static float cameraZoom = .07f;
 	
@@ -45,6 +50,10 @@ public class RogueGame extends ApplicationAdapter {
 		gameMap = new GameMap( new Vector2(40,40) );
 		
 		Gdx.input.setInputProcessor( gameMap );
+	
+		font = new BitmapFont();
+        font.setColor(Color.RED);
+	
 	}
 
 	@Override
@@ -81,17 +90,17 @@ public class RogueGame extends ApplicationAdapter {
 		gameMap.render(batch);
 		batch.end();
 
-		uiBatch.setProjectionMatrix( camera.combined );
+		uiBatch.setProjectionMatrix( ui.combined );
 		
 		uiBatch.begin();
 		
 		gameMap.render(uiBatch);
 
-		uiBatch.draw( overlay, camera.position.x - cameraZoom*Gdx.graphics.getWidth()/2 , camera.position.y - cameraZoom*Gdx.graphics.getHeight()/2, cameraZoom * Gdx.graphics.getWidth(), cameraZoom * Gdx.graphics.getHeight());
+		uiBatch.draw( overlay, ui.position.x - Gdx.graphics.getWidth()/2 , ui.position.y - Gdx.graphics.getHeight()/2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		//uiBatch.draw( overlay, camera.position.x , camera.position.y);
-
-
 		
+
+		font.draw(uiBatch, "Score: " + score, ui.position.x + Gdx.graphics.getWidth()/4, ui.position.y + Gdx.graphics.getHeight()/2 - 12);
 		
 		uiBatch.end();
 
