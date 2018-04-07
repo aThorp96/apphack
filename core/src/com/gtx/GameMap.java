@@ -2,6 +2,7 @@ package com.gtx;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 
 import com.badlogic.gdx.InputProcessor;
@@ -23,7 +24,7 @@ public class GameMap implements InputProcessor{
 		entities = new ArrayList<Entity>();
 		this.mapSize = mapSize;
 		
-		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y);
+		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y, (int) new Date().getTime());
 		
 		entities.add( new Entity(new Vector2(), new Vector2(1f,1f), EntityType.PLAYER) );
 	}
