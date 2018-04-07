@@ -59,15 +59,11 @@ public class Enemy extends Entity {
 		} else {
 			direction = 2; // down
 		}
-		
 	}
 	
 	public void move() {
 		Random r = new Random();
 		int rand = r.nextInt(4);
-		
-		
-		
 	}
 	
 }
