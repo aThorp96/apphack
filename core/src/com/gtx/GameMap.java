@@ -26,7 +26,7 @@ public class GameMap implements InputProcessor{
 		
 		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y, (int) new Date().getTime());
 		
-		entities.add( new Entity(new Vector2(), new Vector2(1f,1f), EntityType.PLAYER) );
+		entities.add( new Hero(new Vector2(), new Vector2(1f,1f), EntityType.PLAYER) );
 	}
 	
 	public void render(SpriteBatch batch) {
