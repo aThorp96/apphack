@@ -121,7 +121,7 @@ public class Entity extends GameObject{
 		hp -= damage;
 	}
 	
-	public int getSpeed() {
+	public float getSpeed() {
 		return RogueGame.SPEED;
 	}
 }

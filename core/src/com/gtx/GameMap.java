@@ -116,7 +116,7 @@ public class GameMap implements InputProcessor{
 	
 	private void applyInputToPlayer(Entity player) {		
 		
-		int speed = player.getSpeed();
+		float speed = player.getSpeed();
 		
 		if (pressedKeys.contains(Keys.W)) {
 			player.setVelocity(player.getVelocity().x, speed);

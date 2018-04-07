@@ -42,6 +42,7 @@ public class Weapon {
 	}
 	
 	public void enemyAttack(Vector2 position, Vector2 vector, Hero hero) {
+		System.out.println("enemy attack");
 		if (!ranged) {
 			vector.nor();
 			vector.scl((float)1.5);
@@ -79,8 +80,7 @@ public class Weapon {
 			Vector2 diff = new Vector2(attackPosition).sub(attackerPosition);
 			diff.nor();
 			diff.scl(.7f);
-			System.out.println(diff);
-
+			
 			batch.draw(tex, attackPosition.x - diff.x, attackPosition.y - diff.y, 0, 0, width*2, height*2, 1, 1, (float) Math.toDegrees(Math.atan2(diff.y, diff.x) - 90), false);
 		}
 		
