@@ -1,5 +1,7 @@
 package com.gtx;
 
+import java.util.List;
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -12,21 +14,40 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameMap implements InputProcessor{
 	
-	private Tile[][] map;
-	private Collection<Entity> entities;
-	private Vector2 mapSize;
+	Tile[][] map;
+	Collection<Entity> entities;
+	Vector2 mapSize;
 	
 	private HashSet<Integer> pressedKeys;
 	
 	public GameMap(Vector2 mapSize) {
 		pressedKeys = new HashSet<Integer>();
 		
-		entities = new ArrayList<Entity>();
+		
 		this.mapSize = mapSize;
 		
 		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y, (int) new Date().getTime());
 		
-		entities.add( new Hero(new Vector2(), new Vector2(1f,1f), EntityType.PLAYER) );
+		Hero hero = new Hero(new Vector2(), new Vector2(0.9f,0.9f), EntityType.PLAYER);
+		
+		int maxNumOfHostiles = 15;
+		entities = MapGenerator.placeEntities(map, hero, maxNumOfHostiles);
+		
+	}
+	
+	private List<Vector2> getFloorTiles(){
+		List<Vector2> floorTiles = new ArrayList<Vector2>();
+		for (int row = 0; row < map.length; row++) {
+			for (int col = 0; col < map[0].length; col++) {
+				if (map[row][col].getTileType() == TileType.GROUND) {
+					floorTiles.add(new Vector2(col, row));
+				}
+			}
+		}
+		return floorTiles;
+	}
+	private <T> T randomFromList(List<T> list) {
+		return list.remove(new Random().nextInt(list.size()));
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -40,8 +61,9 @@ public class GameMap implements InputProcessor{
 		for (Entity entity : entities) {
 			entity.render(batch);
 		}
-		
 	}
+	
+	
 	
 	public void update(float deltaTime) {
 		
@@ -49,11 +71,11 @@ public class GameMap implements InputProcessor{
 			
 			if (entity.getEntityType() == EntityType.PLAYER) {
 				applyInputToPlayer(entity);
+				Hero hero = (Hero) entity;
+				hero.update(deltaTime, this);
 			}
-			
-			entity.update(deltaTime);
+			entity.update(deltaTime, this);
 		}
-
 	}
 
 	
@@ -135,5 +157,9 @@ public class GameMap implements InputProcessor{
 	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public Collection<Entity> getEntities() {
+		return this.entities;
 	}
 }

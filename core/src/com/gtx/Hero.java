@@ -1,6 +1,7 @@
 package com.gtx;
 
 import java.lang.Math;
+import java.util.Collection;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,7 +16,7 @@ public class Hero extends Entity {
 	protected double frame;
 	
 	public Hero(Vector2 position, Vector2 size, EntityType entityType) {
-		super(position, size, entityType);
+		super(position, size, entityType, new Weapon(1, false));
 		direction = 3;
 	}
 
@@ -32,18 +33,20 @@ public class Hero extends Entity {
 		batch.draw(entityType.getTextures()[(int) frame][direction], position.x - size.x/2, position.y - size.x/2, size.x, size.y);
 	}
 
-	public void update(float deltaTime) {
-		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+	public void update(float deltaTime, GameMap map) {
+		super.update(deltaTime, map);
 		int mouseDeltaX = Gdx.input.getDeltaX( (int) this.getPosition().x);
 		int mouseDeltaY = Gdx.input.getDeltaY( (int) this.getPosition().y);
 		// Determine whether to look at the mouse or the movement. 
+		
 		if (Gdx.input.isTouched()) {
-			// This  math is not correct. Getting index out of bounds exception
-			//direction = (int )( Math.atan2((double) mouseDeltaX, (double) mouseDeltaY) % (2 * Math.PI));
+			weapon.attack(position, new Vector2(Gdx.input.getDeltaX(), Gdx.input.getDeltaY()), map.getEntities());
+			//double angle =  Math.toDegrees(Math.atan2((double) mouseDeltaX, (double) mouseDeltaY)) + 180;
+			//System.out.println(angle);
+			//direction = (int) (angle % 90.0);
 		} else {
 			// Determine which quartile the player is moving in.
 			double angle = Math.toDegrees(Math.atan2(velocity.y, velocity.x));
-			System.out.println(angle);
 			if (angle == 0 && velocity.x == 0) {
 				direction = 3;
 			} else if (angle <= 45 && angle >= -45) {

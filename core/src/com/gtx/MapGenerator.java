@@ -2,6 +2,7 @@ package com.gtx;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -13,28 +14,67 @@ public class MapGenerator {
 	
 	private static Random rand;
 	
+	public static Collection<Entity> placeEntities(Tile[][] map, Hero hero, int maxNumberOfHostiles) {
+		int width = map[0].length;
+		int height = map.length;
+		
+		TileType[][] tileMap = new TileType[height][width];
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				tileMap[row][col] = map[row][col].tileType;				
+			}
+		}
+		
+		boolean[][] spawns = findValidSpawns(tileMap);
+		List<Vector2> positions = new ArrayList<Vector2>();
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				if (spawns[row][col])
+					positions.add( new Vector2(col, row) );
+			}
+		}
+		
+
+		Collections.shuffle(positions);
+		Vector2 tilePos = positions.remove(positions.size()-1);
+		
+		hero.setPosition( new Vector2(map[(int)tilePos.y][(int)tilePos.x].position) );
+		
+		Collection<Entity> entities = new ArrayList<Entity>();
+		entities.add(hero);
+		
+		int numHostiles = 0;
+		while (!positions.isEmpty()) {
+			Vector2 position = positions.remove(positions.size()-1);
+			if (numHostiles > maxNumberOfHostiles) {
+				break;
+			}
+			entities.add( new Entity( new Vector2(map[(int)position.y][(int)position.x].position), new Vector2(.9f,.9f), EntityType.GOBLIN ) );
+			numHostiles++;	
+		}
+		
+		return entities;
+	}
+	
 	public static Tile[][] generateMap(int mapWidth, int mapHeight, int seed) {
 		
-		int maxTries = 300;
+		int maxTries = 5;
 		boolean done = false;
 		Tile[][] ret = null;
+		rand = new Random(seed);
 		
 		while (!done) {
 			try {
-				int tries = 1;
-				
-				rand = new Random(seed);
+				int tries = 1;								
 				
 				TileType[][] map = new TileType[mapHeight][mapWidth];
 				
 				
-				Vector2 minRoomSize = new Vector2( 3,3 );
-				Vector2 maxRoomSize = new Vector2( 7,7 );
-				int numTriesToPlaceRoom = 50;
+				Vector2 minRoomSize = new Vector2( 4,4 );
+				Vector2 maxRoomSize = new Vector2( 8,8 );
+				int numTriesToPlaceRoom = 150;
 				
-				int numTriesToPlaceMaze = 10;
-				
-				float chanceToKeepWall = .9f;
+				int numTriesToPlaceMaze = 20;
 				
 				fillWithWalls(map);
 				fillWithRooms(map, minRoomSize, maxRoomSize, numTriesToPlaceRoom);
@@ -46,8 +86,9 @@ public class MapGenerator {
 				
 				TileType[][] mapCopy = cloneMap(map);
 				while (!areRoomsConnected(mapCopy)) {
+
 					mapCopy = cloneMap(map);
-					connectRoomsWithMaze(mapCopy, chanceToKeepWall);
+					connectRoomsWithMaze(mapCopy);
 					tries++;
 					if (tries > maxTries)
 						throw new Exception();
@@ -74,6 +115,23 @@ public class MapGenerator {
 		}
 		
 		return ret;
+	}
+	
+	private static boolean[][] findValidSpawns(TileType[][] map) {
+		int width = map[0].length;
+		int height = map.length;
+		
+		boolean[][] tiles = findTiles(map, TileType.GROUND);
+		boolean[][] rtiles = new boolean[height][width];
+
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				if (tiles[row][col] && numValidSurroundingPos( new Vector2(col, row) , width, height, tiles) >= 3)
+					rtiles[row][col] = true;
+			}
+		}
+		
+		return rtiles;
 	}
 	
 	private static void drawBorder(TileType[][] map, TileType type) {
@@ -126,6 +184,20 @@ public class MapGenerator {
 		int width = map[0].length;
 		int height = map.length;
 		TileType[][] tiles = new TileType[height][width];
+		
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				tiles[row][col] = map[row][col];
+			}
+		}
+		
+		return tiles;
+	}
+	
+	private static boolean[][] cloneBools(boolean[][] map) {
+		int width = map[0].length;
+		int height = map.length;
+		boolean[][] tiles = new boolean[height][width];
 		
 		for (int row = 0; row < height; row++) {
 			for (int col = 0; col < width; col++) {
@@ -221,34 +293,115 @@ public class MapGenerator {
 		return null;
 	}
 	
-	private static void connectRoomsWithMaze(TileType[][] map, float chanceToUnmarkWall) {
-		int width = map[0].length;
-		int height = map.length;
-		boolean[][] roomTiles = findRoomTiles(map);
-		boolean[][] sharedWalls = findAdjacentWalls(map, roomTiles);
-		sharedWalls = unmarkRandomly(sharedWalls, chanceToUnmarkWall);
+	private static void connectRoomsWithMaze(TileType[][] map) {
+
+		Vector2 roomTile = findTile(map, TileType.GROUND);
 		
-		for (int row = 0; row < height; row++) {
-			for (int col = 0; col < width; col++) {
-				if (sharedWalls[row][col])
-					map[row][col] = TileType.GROUND;
+		while(true) {
+			boolean[][] sharedWalls = fillFindAdjacentWalls(map, roomTile);
+			ArrayList<Vector2> potentialHoles = positionsFromBools(sharedWalls);
+			
+			if (potentialHoles.size() != 0) {
+				Vector2 hole = potentialHoles.remove(potentialHoles.size() - 1);
+				map[(int)hole.y][(int)hole.x] = TileType.GROUND;
+			} else {
+				break;
 			}
 		}
 		
 	}
 	
-	private static boolean[][] unmarkRandomly(boolean[][] bools, float chance) {
-		int width = bools[0].length;
-		int height = bools.length;
+	private static Vector2 findTrue(boolean[][] map) {
+		int width = map[0].length;
+		int height = map.length;
 		
 		for (int row = 0; row < height; row++) {
 			for (int col = 0; col < width; col++) {
-				if (bools[row][col] && rand.nextDouble() < chance)
-					bools[row][col] = false;
+				if (map[row][col])
+					return new Vector2(col, row);
 			}
 		}
 		
-		return bools;
+		return null;
+	}
+	
+	private static boolean[][] fillFindAdjacentWalls(TileType[][] map, Vector2 startPos) {
+		int width = map[0].length;
+		int height = map.length;
+		boolean[][] tiles = findTiles(map, TileType.GROUND);
+		
+		boolean[][] connectedTiles = new boolean[height][width];
+		boolean[][] notConnectedTiles = cloneBools(tiles);
+		
+		Stack<Vector2> stack = new Stack<Vector2>();
+		
+		Vector2 currentPosition;
+		stack.push( startPos );
+		
+		while (!stack.isEmpty()) {
+
+			currentPosition = stack.pop();
+			
+			if (!connectedTiles[(int)currentPosition.y][(int)currentPosition.x] 
+					&& tiles[(int)currentPosition.y][(int)currentPosition.x]
+					) {
+				
+				connectedTiles[ (int)currentPosition.y ][ (int)currentPosition.x ] = true;				
+				
+				Vector2[] surroundingPos = generateSurroundingPositions(currentPosition);
+				
+				for (Vector2 pos : surroundingPos) {
+
+					if (pos.x <= 0 || pos.y <= 0 || pos.x >= width-1 || pos.y >= height-1)
+						continue;
+					
+					if (connectedTiles[(int)pos.y][(int)pos.x])
+						continue;
+					
+					if (!tiles[(int)pos.y][(int)pos.x])
+						continue;
+					
+					stack.push(pos);
+				}
+			
+			}
+		}
+		
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				if (connectedTiles[row][col])
+					notConnectedTiles[row][col] = false;
+			}
+		}
+		
+		boolean[][] ret = new boolean[height][width];
+		
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				if (map[row][col] == TileType.WALL && numValidSurroundingPos( new Vector2(col, row) , width, height, connectedTiles) > 0 && numValidSurroundingPos( new Vector2(col, row) , width, height, notConnectedTiles) > 0)
+					ret[row][col] = true;
+			}
+		}		
+				
+		return ret;
+	}
+	
+	private static ArrayList<Vector2> positionsFromBools(boolean[][] bools) {
+		int width = bools[0].length;
+		int height = bools.length;
+		
+		List<Vector2> positions = new ArrayList<Vector2>();
+		
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				if (bools[row][col])
+					positions.add( new Vector2(col, row) );
+			}
+		}
+		
+		Collections.shuffle(positions);
+		
+		return (ArrayList<Vector2>) positions;
 	}
 	
 	private static boolean[][] findAdjacentWalls(TileType[][] map, boolean[][] checkMe) {
@@ -275,7 +428,7 @@ public class MapGenerator {
 		
 		for (int row = 0; row < height; row++) {
 			for (int col = 0; col < width; col++) {
-				if (numValidSurroundingPos( new Vector2(col, row) , width, height, floorTiles) >= 3)
+				if (floorTiles[row][col] == true && numValidSurroundingPos( new Vector2(col, row) , width, height, floorTiles) == 3)
 					roomTiles[row][col] = true;
 			}
 		}
