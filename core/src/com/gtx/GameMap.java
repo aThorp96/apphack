@@ -17,7 +17,7 @@ public class GameMap implements InputProcessor{
 	Tile[][] map;
 	Collection<Entity> entities;
 	Vector2 mapSize;
-	
+	Hero hero;
 	private HashSet<Integer> pressedKeys;
 	
 	public GameMap(Vector2 mapSize) {
@@ -28,7 +28,7 @@ public class GameMap implements InputProcessor{
 		
 		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y, (int) new Date().getTime());
 		
-		Hero hero = new Hero(new Vector2(), new Vector2(0.9f,0.9f), EntityType.PLAYER);
+		hero = new Hero(new Vector2(), new Vector2(0.9f,0.9f), EntityType.PLAYER);
 		
 		int maxNumOfHostiles = 15;
 		entities = MapGenerator.placeEntities(map, hero, maxNumOfHostiles);
