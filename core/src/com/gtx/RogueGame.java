@@ -12,7 +12,7 @@ public class RogueGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	
 	OrthographicCamera camera;
-	float cameraZoom = .03f;
+	float cameraZoom = .07f;
 	
 	GameMap gameMap;
 	
@@ -26,7 +26,7 @@ public class RogueGame extends ApplicationAdapter {
 		camera.translate(-Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2);
 		camera.update();
 
-		gameMap = new GameMap( new Vector2(25,25) );
+		gameMap = new GameMap( new Vector2(40,40) );
 		
 		Gdx.input.setInputProcessor( gameMap );
 	}
@@ -37,6 +37,7 @@ public class RogueGame extends ApplicationAdapter {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		
 		gameMap.update(deltaTime);
+		update();
 		
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -49,6 +50,12 @@ public class RogueGame extends ApplicationAdapter {
 		batch.setProjectionMatrix( camera.combined );
 		batch.begin();
 		
+
+		for (int i = 0; i < cameraZoom*Gdx.graphics.getHeight()+10; i++) {
+			for (int j = 0; j < cameraZoom*Gdx.graphics.getWidth()+10; j++) {
+				batch.draw(TileType.WALL.getTexture(), (float)Math.floor(camera.position.x - cameraZoom*Gdx.graphics.getWidth()/2) - .5f + j, (float)Math.floor(camera.position.y - cameraZoom*Gdx.graphics.getHeight()/2) - .5f + i, 1f, 1f);
+			}
+		}
 		gameMap.render(batch);
 		
 		batch.end();
@@ -57,5 +64,9 @@ public class RogueGame extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		batch.dispose();
+	}
+	
+	private void update() {
+		
 	}
 }
