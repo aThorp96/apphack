@@ -4,6 +4,7 @@ import java.util.Collection;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -35,6 +36,7 @@ public class Weapon {
 			attackPosition = new Vector2(end.x, end.y);
 			attackerPosition = new Vector2(start.x, start.y);
 			attacking = true;
+			playerAttacking = true;
 			if (bb.intersects(hitBox)) {
 				i.hit(damage);
 			}
@@ -55,12 +57,14 @@ public class Weapon {
 		attackPosition = new Vector2(end.x, end.y);
 		attackerPosition = new Vector2(start.x, start.y);
 		attacking = true;
+		playerAttacking = false;
 		frames = 0;
 		if (bb.intersects(hitBox)) {
 			hero.hit(damage);
 		}
 	}
 	
+	private boolean playerAttacking = false;
 	private Vector2 attackPosition;
 	private Vector2 attackerPosition;
 	private boolean attacking = false;
@@ -76,13 +80,23 @@ public class Weapon {
 			float width = 1;
 			float height = 1;
 			frames++;
-			//batch.draw(tex, attackPosition.x - width/2, attackPosition.y - height/2, width, height);
+
 			Vector2 diff = new Vector2(attackPosition).sub(attackerPosition);
 			diff.nor();			
 			diff.rotate(0);
 			diff.scl(1f);
 			
+
+			Color oldColor = batch.getColor();
+			if (playerAttacking) {
+				batch.setColor(oldColor);
+			} else {
+				batch.setColor(Color.DARK_GRAY);
+			}
+			
 			batch.draw(tex, attackerPosition.x, attackerPosition.y, 0, 0, width*2, height*2, 1, 1, (float) Math.toDegrees(Math.atan2(diff.y, diff.x)), false);
+			
+			batch.setColor(oldColor);
 		}
 		
 		if (frames > ANIMATION_LENGTH) {
