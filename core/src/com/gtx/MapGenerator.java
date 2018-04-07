@@ -196,6 +196,20 @@ public class MapGenerator {
 		return tiles;
 	}
 	
+	private static boolean[][] cloneBools(boolean[][] map) {
+		int width = map[0].length;
+		int height = map.length;
+		boolean[][] tiles = new boolean[height][width];
+		
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				tiles[row][col] = map[row][col];
+			}
+		}
+		
+		return tiles;
+	}
+	
 	private static boolean areRoomsConnected(TileType[][] map) {
 		int width = map[0].length;
 		int height = map.length;
@@ -295,6 +309,67 @@ public class MapGenerator {
 			}
 		}
 		
+	}
+	
+	private static boolean[][] fillFindAdjacentWalls(TileType[][] map, Vector2 startPos) {
+		int width = map[0].length;
+		int height = map.length;
+		boolean[][] tiles = findTiles(map, TileType.GROUND);
+		
+		boolean[][] connectedTiles = new boolean[height][width];
+		boolean[][] notConnectedTiles = cloneBools(tiles);
+		
+		Stack<Vector2> stack = new Stack<Vector2>();
+		
+		Vector2 currentPosition;
+		stack.push( startPos );
+		
+		while (!stack.isEmpty()) {
+
+			currentPosition = stack.pop();
+			
+			if (!connectedTiles[(int)currentPosition.y][(int)currentPosition.x] 
+					&& tiles[(int)currentPosition.y][(int)currentPosition.x]
+					) {
+				
+				connectedTiles[ (int)currentPosition.y ][ (int)currentPosition.x ] = true;				
+				
+				Vector2[] surroundingPos = generateSurroundingPositions(currentPosition);
+				
+				for (Vector2 pos : surroundingPos) {
+
+					if (pos.x <= 0 || pos.y <= 0 || pos.x >= width-1 || pos.y >= height-1)
+						continue;
+					
+					if (connectedTiles[(int)pos.y][(int)pos.x])
+						continue;
+					
+					if (!tiles[(int)pos.y][(int)pos.x])
+						continue;
+					
+					stack.push(pos);
+				}
+			
+			}
+		}
+		
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				if (connectedTiles[row][col])
+					notConnectedTiles[row][col] = false;
+			}
+		}
+		
+		boolean[][] ret = new boolean[height][width];
+		
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				if (map[row][col] == TileType.WALL && numValidSurroundingPos( new Vector2(col, row) , width, height, connectedTiles) > 0 && numValidSurroundingPos( new Vector2(col, row) , width, height, notConnectedTiles) > 0)
+					notConnectedTiles[row][col] = false;
+			}
+		}
+		
+		return null;
 	}
 	
 	private static boolean[][] unmarkRandomly(boolean[][] bools, float chance) {
