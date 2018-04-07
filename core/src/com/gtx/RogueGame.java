@@ -63,5 +63,4 @@ public class RogueGame extends ApplicationAdapter {
 	private void update() {
 		
 	}
-	
 }

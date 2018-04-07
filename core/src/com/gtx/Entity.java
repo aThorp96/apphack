@@ -6,12 +6,24 @@ import com.badlogic.gdx.math.Vector2;
 public class Entity extends GameObject{
 
 	protected EntityType entityType;
+	protected int hp;
 	protected Vector2 velocity;
+	protected Weapon weapon;
 	
 	public Entity(Vector2 position, Vector2 size, EntityType entityType) {
 		super(position, size);
 		this.entityType = entityType;
 		this.velocity = new Vector2();
+		weapon = null;
+		hp = 10;
+	}
+	
+	public Entity(Vector2 position, Vector2 size, EntityType entityType, Weapon weapon) {
+		super(position, size);
+		this.entityType = entityType;
+		this.velocity = new Vector2();
+		this.weapon = weapon;
+		hp = 10;
 	}
 
 	@Override
@@ -41,4 +53,7 @@ public class Entity extends GameObject{
 		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
 	}
 	
+	public void hit(int damage) {
+		hp -= damage;
+	}
 }
