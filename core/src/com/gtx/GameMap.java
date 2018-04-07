@@ -6,14 +6,17 @@ import java.util.HashSet;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class GameMap implements InputProcessor{
 	
-	private Tile[][] map;
-	private Collection<Entity> entities;
-	private Vector2 mapSize;
+	Tile[][] map;
+	Collection<Entity> entities;
+	Vector2 mapSize;
 	
 	private HashSet<Integer> pressedKeys;
 	
@@ -25,7 +28,8 @@ public class GameMap implements InputProcessor{
 		
 		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y);
 		
-		entities.add( new Entity(new Vector2(), new Vector2(1f,1f), EntityType.PLAYER) );
+		entities.add( new Entity(new Vector2(), new Vector2(0.5f,0.5f), EntityType.PLAYER) );
+
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -40,7 +44,10 @@ public class GameMap implements InputProcessor{
 			entity.render(batch);
 		}
 		
+		
 	}
+	
+	
 	
 	public void update(float deltaTime) {
 		
@@ -49,10 +56,8 @@ public class GameMap implements InputProcessor{
 			if (entity.getEntityType() == EntityType.PLAYER) {
 				applyInputToPlayer(entity);
 			}
-			
-			entity.update(deltaTime);
+			entity.update(deltaTime, this);
 		}
-
 	}
 
 	
@@ -135,4 +140,5 @@ public class GameMap implements InputProcessor{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
 }

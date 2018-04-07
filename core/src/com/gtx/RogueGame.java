@@ -2,19 +2,28 @@ package com.gtx;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+
 
 public class RogueGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	
 	OrthographicCamera camera;
+	OrthographicCamera textCamera;
+
 	float cameraZoom = .03f;
 	
 	GameMap gameMap;
+	BitmapFont font;
 	
 	@Override
 	public void create () {
@@ -25,10 +34,25 @@ public class RogueGame extends ApplicationAdapter {
 		camera.zoom = cameraZoom;
 		camera.translate(-Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2);
 		camera.update();
+		textCamera = new OrthographicCamera();
+		textCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		textCamera.translate(-Gdx.graphics.getWidth()/5f, -Gdx.graphics.getHeight()/1.25f);
+		textCamera.zoom = 0.6f;
+		textCamera.update();
 
+		
 		gameMap = new GameMap( new Vector2(25,25) );
 		
 		Gdx.input.setInputProcessor( gameMap );
+		
+		
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("../core/assets/OpenSans-Regular.ttf"));
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 12;
+		font = generator.generateFont(parameter); // font size 12 pixels
+		generator.dispose(); // don't forget to dispose to avoid memory leaks!
+		font.setColor(Color.BROWN);
+		//font.getData().setScale(1f);
 	}
 
 	@Override
@@ -50,7 +74,16 @@ public class RogueGame extends ApplicationAdapter {
 		batch.begin();
 		
 		gameMap.render(batch);
+		batch.end();
 		
+
+		batch.setProjectionMatrix(textCamera.combined);
+		batch.begin();
+		
+		
+		// 
+		//Gdx.graphics.getHeight();
+		font.draw(batch, "" + Gdx.graphics.getHeight() + ", " + textCamera.viewportHeight, 0, 0);
 		batch.end();
 	}
 	
