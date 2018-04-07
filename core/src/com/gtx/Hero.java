@@ -34,7 +34,7 @@ public class Hero extends Entity {
 	}
 
 	public void update(float deltaTime, GameMap map) {
-		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+		super.update(deltaTime, map);
 		int mouseDeltaX = Gdx.input.getDeltaX( (int) this.getPosition().x);
 		int mouseDeltaY = Gdx.input.getDeltaY( (int) this.getPosition().y);
 		// Determine whether to look at the mouse or the movement. 
