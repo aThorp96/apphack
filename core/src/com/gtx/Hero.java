@@ -16,7 +16,7 @@ public class Hero extends Entity {
 	protected double frame;
 	
 	public Hero(Vector2 position, Vector2 size, EntityType entityType) {
-		super(position, size, entityType);
+		super(position, size, entityType, new Weapon(1, false));
 		direction = 3;
 	}
 
