@@ -139,8 +139,8 @@ public class Entity extends GameObject{
 				adjacents.add(map.map[x][y]);
 			}
 		}*/
-		for (int i = x-1; i <= x+1; i++) {
-			for (int j = y - 1; j <= y + 1; j++) {
+		for (int i = x - 1 >= 0 ? x-1 : x; i <= x+1; i++) {
+			for (int j = y - 1 >= 0 ? y-1 : y; j <= y + 1; j++) {
 				adjacents.add(map.map[j][i]);
 			}
 		}

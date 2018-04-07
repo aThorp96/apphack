@@ -29,7 +29,7 @@ public class GameMap implements InputProcessor{
 		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y, (int) new Date().getTime());
 		List<Vector2> floorTiles = getFloorTiles();
 		Vector2 heroStart = randomFromList(floorTiles);
-		entities.add( new Entity(new Vector2(5, 5), new Vector2(0.5f, 0.5f), EntityType.PLAYER) );
+		entities.add( new Entity(new Vector2(heroStart.x, heroStart.y), new Vector2(0.5f, 0.5f), EntityType.PLAYER) );
 
 	}
 	
@@ -38,7 +38,7 @@ public class GameMap implements InputProcessor{
 		for (int row = 0; row < map.length; row++) {
 			for (int col = 0; col < map[0].length; col++) {
 				if (map[row][col].getTileType() == TileType.GROUND) {
-					floorTiles.add(new Vector2(row, col));
+					floorTiles.add(new Vector2(col, row));
 				}
 			}
 		}
