@@ -16,6 +16,8 @@ public class RogueGame extends ApplicationAdapter {
 	
 	GameMap gameMap;
 	
+	public static int score = 0;
+	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();		
@@ -59,6 +61,8 @@ public class RogueGame extends ApplicationAdapter {
 		gameMap.render(batch);
 		
 		batch.end();
+		
+		System.out.println("Score: " + score);
 	}
 	
 	@Override
