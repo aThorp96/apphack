@@ -44,6 +44,7 @@ public class Weapon {
 	}
 	
 	public void enemyAttack(Vector2 position, Vector2 vector, Hero hero) {
+		System.out.println("enemy attack");
 		if (!ranged) {
 			vector.nor();
 			vector.scl((float)1.5);
