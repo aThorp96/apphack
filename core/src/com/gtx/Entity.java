@@ -95,9 +95,7 @@ public class Entity extends GameObject{
 		}
 		for (Tile obstacle : getAdjacentTiles(position, map)) {
 			if (obstacle.getTileType() == TileType.WALL) {
-				System.out.println("Wall");
 				if( box.intersects(obstacle.getBoundingBox())){	
-					System.out.println("intersects");
 					collide(obstacle);
 				}
 			}
@@ -119,5 +117,9 @@ public class Entity extends GameObject{
 
 	public void hit(int damage) {
 		hp -= damage;
+	}
+	
+	public int getSpeed() {
+		return 4;
 	}
 }

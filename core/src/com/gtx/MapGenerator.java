@@ -49,7 +49,7 @@ public class MapGenerator {
 			if (numHostiles > maxNumberOfHostiles) {
 				break;
 			}
-			entities.add( new Entity( new Vector2(map[(int)position.y][(int)position.x].position), new Vector2(.9f,.9f), EntityType.GOBLIN ) );
+			entities.add( new Enemy( new Vector2(map[(int)position.y][(int)position.x].position), new Vector2(.9f,.9f), EntityType.GOBLIN ) );
 			numHostiles++;	
 		}
 		
