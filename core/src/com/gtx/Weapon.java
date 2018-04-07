@@ -72,16 +72,18 @@ public class Weapon {
 		
 		
 		if (attacking) {
-			TextureRegion tex = texture[(int)(4f*frames /ANIMATION_LENGTH) % 4][0];
+			TextureRegion tex = texture[(int)(5f*frames /ANIMATION_LENGTH) % 5][0];
 			float width = 1;
 			float height = 1;
 			frames++;
 			//batch.draw(tex, attackPosition.x - width/2, attackPosition.y - height/2, width, height);
 			Vector2 diff = new Vector2(attackPosition).sub(attackerPosition);
-			diff.nor();
-			diff.scl(.7f);
-			
-			batch.draw(tex, attackPosition.x - diff.x, attackPosition.y - diff.y, 0, 0, width*2, height*2, 1, 1, (float) Math.toDegrees(Math.atan2(diff.y, diff.x) - 90), false);
+			diff.nor();			
+			diff.rotate(0);
+			diff.scl(1f);
+
+
+			batch.draw(tex, attackerPosition.x, attackerPosition.y, 0, 0, width*2, height*2, 1, 1, (float) Math.toDegrees(Math.atan2(diff.y, diff.x)), false);
 		}
 		
 		if (frames > ANIMATION_LENGTH) {
