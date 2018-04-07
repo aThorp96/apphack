@@ -8,7 +8,7 @@ public enum TileType {
 	WALL(0,1);
 	
 	private static final int TILE_TEXTURE_SIZE = 16;
-	private static final String TILE_TEXTURE_PATH = "";
+	private static final String TILE_TEXTURE_PATH = "../core/assets/TmpTiles.png";
 	
 	private static TextureRegion[][] tileTextures;
 	

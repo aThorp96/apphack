@@ -2,21 +2,30 @@ package com.gtx;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class GameMap {
+public class GameMap implements InputProcessor{
 	
 	private Tile[][] map;
 	private Collection<Entity> entities;
 	private Vector2 mapSize;
 	
-	public GameMap(Vector2 mapSize) {		
+	private HashSet<Integer> pressedKeys;
+	
+	public GameMap(Vector2 mapSize) {
+		pressedKeys = new HashSet<Integer>();
+		
 		entities = new ArrayList<Entity>();
 		this.mapSize = mapSize;
 		
 		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y);
+		
+		entities.add( new Entity(new Vector2(), new Vector2(1f,1f), EntityType.PLAYER) );
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -36,8 +45,94 @@ public class GameMap {
 	public void update(float deltaTime) {
 		
 		for ( Entity entity : entities ) {
+			
+			if (entity.getEntityType() == EntityType.PLAYER) {
+				applyInputToPlayer(entity);
+			}
+			
 			entity.update(deltaTime);
 		}
+
+	}
+
+	
+	private void applyInputToPlayer(Entity player) {		
 		
+		int speed = 4;
+		
+		if (pressedKeys.contains(Keys.W)) {
+			player.setVelocity(player.getVelocity().x, speed);
+		}
+		if (pressedKeys.contains(Keys.S)) {
+			player.setVelocity(player.getVelocity().x, -speed);
+		}
+		if (pressedKeys.contains(Keys.A)) {
+			player.setVelocity(-speed, player.getVelocity().y);
+		}
+		if (pressedKeys.contains(Keys.D)) {
+			player.setVelocity(speed, player.getVelocity().y);
+		}
+		
+		if (!(pressedKeys.contains(Keys.W) || pressedKeys.contains(Keys.S))) {
+			player.setVelocity(player.getVelocity().x, 0);
+		}
+		
+		if (!(pressedKeys.contains(Keys.A) || pressedKeys.contains(Keys.D))) {
+			player.setVelocity(0, player.getVelocity().y);
+		}
+	}
+	
+	
+	
+	@Override
+	public boolean keyDown(int keycode) {
+		
+		pressedKeys.add(keycode);
+
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		
+		pressedKeys.remove(keycode);
+		
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
