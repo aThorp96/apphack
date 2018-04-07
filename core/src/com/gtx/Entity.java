@@ -122,6 +122,6 @@ public class Entity extends GameObject{
 	}
 	
 	public int getSpeed() {
-		return 4;
+		return RogueGame.SPEED;
 	}
 }

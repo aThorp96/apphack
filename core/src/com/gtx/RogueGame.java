@@ -14,6 +14,9 @@ public class RogueGame extends ApplicationAdapter {
 	public static OrthographicCamera camera;
 	public static float cameraZoom = .07f;
 	
+	public static final int SPEED = 4;
+	public static final int GOBLIN_VIEW_DISTANCE = 6;
+	
 	GameMap gameMap;
 	
 	public static int score = 0;
