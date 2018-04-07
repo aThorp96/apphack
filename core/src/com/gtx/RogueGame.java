@@ -2,9 +2,11 @@ package com.gtx;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -14,8 +16,13 @@ public class RogueGame extends ApplicationAdapter {
 	OrthographicCamera ui;
 	Texture overlay;
 
+	private BitmapFont font;
+    
+    
 	public static OrthographicCamera camera;
-	public static float cameraZoom = .07f;
+	public static float defaultZoom = .07f;
+	
+	public static float cameraZoom = defaultZoom;
 	
 	public static final int SPEED = 4;
 	public static final int GOBLIN_VIEW_DISTANCE = 6;
@@ -23,6 +30,9 @@ public class RogueGame extends ApplicationAdapter {
 	GameMap gameMap;
 	
 	public static int score = 0;
+	int defaultWidth;
+	int defaultHeight;
+	
 	
 	@Override
 	public void create () {
@@ -30,14 +40,10 @@ public class RogueGame extends ApplicationAdapter {
 		uiBatch = new SpriteBatch();
 				
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.zoom = cameraZoom;
-		camera.translate(-Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2);
-		camera.update();
-		
 		ui = new OrthographicCamera();
-		ui.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		ui.update();
+		defaultHeight = Gdx.graphics.getHeight();
+		defaultWidth = Gdx.graphics.getWidth();
+		updateCameras();
 		
 		overlay = new Texture("../core/assets/fog.png");
 
@@ -45,6 +51,10 @@ public class RogueGame extends ApplicationAdapter {
 		gameMap = new GameMap( new Vector2(40,40) );
 		
 		Gdx.input.setInputProcessor( gameMap );
+	
+		font = new BitmapFont();
+        font.setColor(Color.RED);
+	
 	}
 
 	@Override
@@ -81,21 +91,48 @@ public class RogueGame extends ApplicationAdapter {
 		gameMap.render(batch);
 		batch.end();
 
-		uiBatch.setProjectionMatrix( camera.combined );
+		uiBatch.setProjectionMatrix( ui.combined );
 		
 		uiBatch.begin();
 		
 		gameMap.render(uiBatch);
 
-		uiBatch.draw( overlay, camera.position.x - cameraZoom*Gdx.graphics.getWidth()/2 , camera.position.y - cameraZoom*Gdx.graphics.getHeight()/2, cameraZoom * Gdx.graphics.getWidth(), cameraZoom * Gdx.graphics.getHeight());
+		uiBatch.draw( overlay, 
+				ui.position.x - Gdx.graphics.getWidth()/2 , 
+				ui.position.y - Gdx.graphics.getHeight()/2,
+				Gdx.graphics.getWidth(), 
+				Gdx.graphics.getHeight());
 		//uiBatch.draw( overlay, camera.position.x , camera.position.y);
-
-
 		
+
+		font.draw(uiBatch, "Score: " + score, ui.position.x + Gdx.graphics.getWidth()/4, ui.position.y + Gdx.graphics.getHeight()/2 - 12);
 		
 		uiBatch.end();
 
 
+	}
+	
+	private void updateCameras() {
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.zoom = cameraZoom;
+		camera.translate(-Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2);
+		camera.update();
+		
+		ui.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		ui.update();
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		float widthRatio =  (float)   defaultWidth / (float) width;
+		float heightRatio =  (float)     defaultHeight / (float) height;
+		if ( widthRatio < heightRatio) {
+			RogueGame.cameraZoom = RogueGame.defaultZoom * widthRatio;
+		} else {
+			RogueGame.cameraZoom = RogueGame.defaultZoom * heightRatio;
+		}
+		updateCameras();
+		
 	}
 	
 	@Override
