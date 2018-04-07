@@ -17,7 +17,7 @@ public class Hero extends Entity {
 	
 	public Hero(Vector2 position, Vector2 size, EntityType entityType) {
 		super(position, size, entityType);
-		direction = 90;
+		direction = 3;
 	}
 
 	@Override
