@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum TileType {
-	GROUND(0,0),
-	WALL(0,1);
+	GROUND(1,4),
+	WALL(0,0);
 	
 	private static final int TILE_TEXTURE_SIZE = 16;
-	private static final String TILE_TEXTURE_PATH = "../core/assets/TmpTiles.png";
+	private static final String TILE_TEXTURE_PATH = "../core/assets/RocksFull.png";
 	
 	private static TextureRegion[][] tileTextures;
 	

@@ -12,7 +12,7 @@ public class RogueGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	
 	OrthographicCamera camera;
-	float cameraZoom = .03f;
+	float cameraZoom = .07f;
 	
 	GameMap gameMap;
 	
@@ -26,7 +26,7 @@ public class RogueGame extends ApplicationAdapter {
 		camera.translate(-Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2);
 		camera.update();
 
-		gameMap = new GameMap( new Vector2(25,25) );
+		gameMap = new GameMap( new Vector2(30,30) );
 		
 		Gdx.input.setInputProcessor( gameMap );
 	}
