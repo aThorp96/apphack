@@ -81,8 +81,7 @@ public class Weapon {
 			diff.nor();			
 			diff.rotate(0);
 			diff.scl(1f);
-
-
+			
 			batch.draw(tex, attackerPosition.x, attackerPosition.y, 0, 0, width*2, height*2, 1, 1, (float) Math.toDegrees(Math.atan2(diff.y, diff.x)), false);
 		}
 		

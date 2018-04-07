@@ -72,9 +72,7 @@ public class Enemy extends Entity {
 			}
 			toHero.add(smidgeV);
 			velocity.set(toHero);
-		} else {
-			velocity.set(new Vector2());
-		}
+		} 
 		if (distanceToHero < Weapon.SWORD_LENGTH && timeSinceLastAttack > ATTACK_RATE) {
 			weapon.enemyAttack(position, toHero, map.getHero());
 			System.out.println(distanceToHero + ", " + map.getHero().hp);
@@ -99,7 +97,7 @@ public class Enemy extends Entity {
 		}
 	}
 	public float getSpeed() {
-		return RogueGame.SPEED * 1.15f;
+		return RogueGame.SPEED * (RogueGame.score / 100 + 1);
 	}
 	
 }
