@@ -21,12 +21,16 @@ public class GameMap implements InputProcessor{
 	public GameMap(Vector2 mapSize) {
 		pressedKeys = new HashSet<Integer>();
 		
-		entities = new ArrayList<Entity>();
+		
 		this.mapSize = mapSize;
 		
 		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y, (int) new Date().getTime());
 		
-		entities.add( new Hero(new Vector2(), new Vector2(1f,1f), EntityType.PLAYER) );
+		Hero hero = new Hero(new Vector2(), new Vector2(1f,1f), EntityType.PLAYER);
+		
+		int maxNumOfHostiles = 15;
+		entities = MapGenerator.placeEntities(map, hero, maxNumOfHostiles);
+		
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -49,6 +53,7 @@ public class GameMap implements InputProcessor{
 			
 			if (entity.getEntityType() == EntityType.PLAYER) {
 				applyInputToPlayer(entity);
+				
 			}
 			
 			entity.update(deltaTime);
@@ -135,5 +140,9 @@ public class GameMap implements InputProcessor{
 	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public Collection<Entity> getEntities() {
+		return this.entities;
 	}
 }
