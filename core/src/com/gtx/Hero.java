@@ -24,7 +24,7 @@ public class Hero extends Entity {
 		//note, this is getting the first tile
 		//I am leaving room for animations
 		if (!this.velocity.isZero()) {
-			frame = ++frame % ANIMATION_DIRECTIONS;
+			frame = (frame + 0.25) % ANIMATION_DIRECTIONS;
 		} else {
 			frame = 0;
 		}
