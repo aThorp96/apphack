@@ -20,7 +20,6 @@ public class RogueGame extends ApplicationAdapter {
 	public static final int SPEED = 4;
 	public static final int GOBLIN_VIEW_DISTANCE = 6;
 
-	
 	GameMap gameMap;
 	
 	public static int score = 0;
@@ -81,7 +80,22 @@ public class RogueGame extends ApplicationAdapter {
 		}
 		gameMap.render(batch);
 		batch.end();
+
+		uiBatch.setProjectionMatrix( camera.combined );
 		
+		uiBatch.begin();
+		
+		gameMap.render(uiBatch);
+
+		uiBatch.draw( overlay, camera.position.x - cameraZoom*Gdx.graphics.getWidth()/2 , camera.position.y - cameraZoom*Gdx.graphics.getHeight()/2, cameraZoom * Gdx.graphics.getWidth(), cameraZoom * Gdx.graphics.getHeight());
+		//uiBatch.draw( overlay, camera.position.x , camera.position.y);
+
+
+		
+		
+		uiBatch.end();
+
+
 	}
 	
 	@Override
