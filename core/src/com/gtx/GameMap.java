@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
@@ -18,7 +19,10 @@ public class GameMap implements InputProcessor{
 	Collection<Entity> entities;
 	Vector2 mapSize;
 	Hero hero;
+
 	private HashSet<Integer> pressedKeys;
+
+	int maxNumOfHostiles = 15;
 	
 	public GameMap(Vector2 mapSize) {
 		pressedKeys = new HashSet<Integer>();
@@ -30,7 +34,6 @@ public class GameMap implements InputProcessor{
 		
 		hero = new Hero(new Vector2(), new Vector2(0.9f,0.9f), EntityType.PLAYER);
 		
-		int maxNumOfHostiles = 15;
 		entities = MapGenerator.placeEntities(map, hero, maxNumOfHostiles);
 		
 	}
@@ -67,6 +70,8 @@ public class GameMap implements InputProcessor{
 	
 	public void update(float deltaTime) {
 		
+		Collection<Entity> toBeRemoved = new ArrayList<Entity>();
+		
 		for ( Entity entity : entities ) {
 			
 			if (entity.getEntityType() == EntityType.PLAYER) {
@@ -75,13 +80,43 @@ public class GameMap implements InputProcessor{
 				hero.update(deltaTime, this);
 			}
 			entity.update(deltaTime, this);
+			
+			if (entity.hp <= 0) {
+				if (entity instanceof Enemy) {
+					RogueGame.score++;
+					toBeRemoved.add(entity);
+				}
+			}
 		}
+		
+		entities.removeAll(toBeRemoved);
+		
+		if (entities.size() == 1 && entities.contains(hero)) {
+			moveToNextLevel();
+			return;
+		} else if (hero.hp <= 0) {
+			gameOver();
+			return;
+		}
+		
 	}
 
 	
+	private void moveToNextLevel() {
+		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y, (int) new Date().getTime());
+		
+		entities = MapGenerator.placeEntities(map, hero, maxNumOfHostiles);
+	}
+	
+	private void gameOver() {
+		RogueGame.score = 0;
+		hero.hp = Entity.DEFAULT_HP;
+		moveToNextLevel();
+	}
+	
 	private void applyInputToPlayer(Entity player) {		
 		
-		int speed = 4;
+		int speed = player.getSpeed();
 		
 		if (pressedKeys.contains(Keys.W)) {
 			player.setVelocity(player.getVelocity().x, speed);
@@ -102,6 +137,21 @@ public class GameMap implements InputProcessor{
 		
 		if (!(pressedKeys.contains(Keys.A) || pressedKeys.contains(Keys.D))) {
 			player.setVelocity(0, player.getVelocity().y);
+		}
+		
+		
+		if (pressedKeys.contains(Keys.PAGE_UP)) {
+			Iterator<Entity> entit = (Iterator<Entity>) entities.iterator();
+			Entity tmp = entit.next();
+			if (tmp != hero)
+				tmp.hp -= 1;
+			else
+				entit.next().hp -= 1;
+		}
+		
+		if (pressedKeys.contains(Keys.PAGE_DOWN)) {
+			hero.hp = 0;
+			pressedKeys.remove(Keys.PAGE_DOWN);
 		}
 	}
 	
@@ -161,5 +211,8 @@ public class GameMap implements InputProcessor{
 	
 	public Collection<Entity> getEntities() {
 		return this.entities;
+	}
+	public Hero getHero() {
+		return hero;
 	}
 }

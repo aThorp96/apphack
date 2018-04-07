@@ -9,6 +9,8 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class Entity extends GameObject{
 
+	public static final int DEFAULT_HP = 10;
+	
 	protected EntityType entityType;
 	protected int hp;
 	protected Vector2 velocity;
@@ -20,7 +22,7 @@ public class Entity extends GameObject{
 		this.entityType = entityType;
 		this.velocity = new Vector2();
 		weapon = null;
-		hp = 10;
+		hp = DEFAULT_HP;
 	}
 	
 	public Entity(Vector2 position, Vector2 size, EntityType entityType, Weapon weapon) {
@@ -28,7 +30,7 @@ public class Entity extends GameObject{
 		this.entityType = entityType;
 		this.velocity = new Vector2();
 		this.weapon = weapon;
-		hp = 10;
+		hp = DEFAULT_HP;
 	}
 
 	@Override
@@ -95,9 +97,7 @@ public class Entity extends GameObject{
 		}
 		for (Tile obstacle : getAdjacentTiles(position, map)) {
 			if (obstacle.getTileType() == TileType.WALL) {
-				System.out.println("Wall");
 				if( box.intersects(obstacle.getBoundingBox())){	
-					System.out.println("intersects");
 					collide(obstacle);
 				}
 			}
@@ -119,5 +119,9 @@ public class Entity extends GameObject{
 
 	public void hit(int damage) {
 		hp -= damage;
+	}
+	
+	public int getSpeed() {
+		return RogueGame.SPEED;
 	}
 }

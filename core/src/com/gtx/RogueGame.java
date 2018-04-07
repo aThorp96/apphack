@@ -11,14 +11,19 @@ import com.badlogic.gdx.math.Vector2;
 public class RogueGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	SpriteBatch uiBatch;
+	OrthographicCamera ui;
+	Texture overlay;
+
+	public static OrthographicCamera camera;
+	public static float cameraZoom = .07f;
+	
+	public static final int SPEED = 4;
+	public static final int GOBLIN_VIEW_DISTANCE = 6;
 
 	
-	OrthographicCamera camera;
-	OrthographicCamera ui;
-	float cameraZoom = .07f;
-	Texture overlay;
-	
 	GameMap gameMap;
+	
+	public static int score = 0;
 	
 	@Override
 	public void create () {
@@ -77,20 +82,6 @@ public class RogueGame extends ApplicationAdapter {
 		gameMap.render(batch);
 		batch.end();
 		
-		uiBatch.setProjectionMatrix( camera.combined );
-		
-		uiBatch.begin();
-		
-		gameMap.render(uiBatch);
-
-		uiBatch.draw( overlay, camera.position.x - cameraZoom*Gdx.graphics.getWidth()/2 , camera.position.y - cameraZoom*Gdx.graphics.getHeight()/2, cameraZoom * Gdx.graphics.getWidth(), cameraZoom * Gdx.graphics.getHeight());
-		//uiBatch.draw( overlay, camera.position.x , camera.position.y);
-
-
-		
-		
-		uiBatch.end();
-
 	}
 	
 	@Override
