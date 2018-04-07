@@ -53,7 +53,8 @@ public class GameMap implements InputProcessor{
 			
 			if (entity.getEntityType() == EntityType.PLAYER) {
 				applyInputToPlayer(entity);
-				
+				Hero hero = (Hero) entity;
+				hero.update(deltaTime, this);
 			}
 			
 			entity.update(deltaTime);
