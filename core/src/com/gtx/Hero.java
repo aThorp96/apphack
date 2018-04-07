@@ -31,6 +31,8 @@ public class Hero extends Entity {
 		}
 			
 		batch.draw(entityType.getTextures()[(int) frame][direction], position.x - size.x/2, position.y - size.x/2, size.x, size.y);
+		
+		weapon.render(batch);
 	}
 
 	public void update(float deltaTime, GameMap map) {

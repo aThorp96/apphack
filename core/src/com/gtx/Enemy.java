@@ -34,6 +34,8 @@ public class Enemy extends Entity {
 		}
 			
 		batch.draw(entityType.getTextures()[(int) frame][direction], position.x - size.x/2, position.y - size.x/2, size.x, size.y);
+		
+		weapon.render(batch);
 	}
 
 	
@@ -50,7 +52,7 @@ public class Enemy extends Entity {
 			velocity.set(new Vector2());
 		}
 		if (distanceToHero < Weapon.SWORD_LENGTH && timeSinceLastAttack < ATTACK_RATE) {
-			weapon.attack(position, toHero, map.getHero());
+			weapon.enemyAttack(position, toHero, map.getHero());
 			System.out.println(distanceToHero + ", " + map.getHero().hp);
 			timeSinceLastAttack = 0;
 		}else {
