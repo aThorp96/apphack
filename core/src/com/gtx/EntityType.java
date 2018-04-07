@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum EntityType {
-	PLAYER(16,16,"");
+	PLAYER(16,16,"../core/assets/TmpTiles.png");
 	
 	private TextureRegion[][] textures;
 	

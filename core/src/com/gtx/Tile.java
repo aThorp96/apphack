@@ -14,7 +14,9 @@ public class Tile extends GameObject{
 
 	@Override
 	public void render(SpriteBatch batch) {
+		//System.out.println(size);
 		batch.draw(tileType.getTexture(), position.x - size.x/2, position.y - size.x/2, size.x, size.y);
+		//batch.draw(tileType.getTexture(), position.x, position.y);
 	}
 
 	public TileType getTileType() {

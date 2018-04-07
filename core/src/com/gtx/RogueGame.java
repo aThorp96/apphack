@@ -12,20 +12,23 @@ public class RogueGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	
 	OrthographicCamera camera;
-	float cameraZoom = .1f;
+	float cameraZoom = .03f;
 	
 	GameMap gameMap;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();		
-		
+				
 		camera = new OrthographicCamera();
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.zoom = cameraZoom;
 		camera.translate(-Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2);
 		camera.update();
+
+		gameMap = new GameMap( new Vector2(25,25) );
 		
-		gameMap = new GameMap( new Vector2(0,0) );
+		Gdx.input.setInputProcessor( gameMap );
 	}
 
 	@Override
@@ -37,6 +40,11 @@ public class RogueGame extends ApplicationAdapter {
 		
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		if (Gdx.input.isTouched()) {
+			camera.translate(-Gdx.input.getDeltaX() * cameraZoom, Gdx.input.getDeltaY() * cameraZoom);
+			camera.update();
+		}
 		
 		batch.setProjectionMatrix( camera.combined );
 		batch.begin();
