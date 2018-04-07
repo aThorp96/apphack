@@ -86,6 +86,7 @@ public class Weapon {
 			diff.rotate(0);
 			diff.scl(1f);
 			
+
 			Color oldColor = batch.getColor();
 			if (playerAttacking) {
 				batch.setColor(oldColor);
