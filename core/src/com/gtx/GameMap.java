@@ -53,6 +53,7 @@ public class GameMap implements InputProcessor{
 			
 			if (entity.getEntityType() == EntityType.PLAYER) {
 				applyInputToPlayer(entity);
+				
 			}
 			
 			entity.update(deltaTime);
@@ -139,5 +140,9 @@ public class GameMap implements InputProcessor{
 	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public Collection<Entity> getEntities() {
+		return this.entities;
 	}
 }
