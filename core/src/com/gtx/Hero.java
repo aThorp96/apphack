@@ -40,7 +40,8 @@ public class Hero extends Entity {
 		// Determine whether to look at the mouse or the movement. 
 		
 		if (Gdx.input.isTouched()) {
-			weapon.attack(position, new Vector2(Gdx.input.getDeltaX(), Gdx.input.getDeltaY()), map.getEntities());
+			
+			weapon.heroAttack(position, new Vector2(Gdx.input.getX() - Gdx.graphics.getWidth()/2, -Gdx.input.getY() + Gdx.graphics.getHeight()/2), map.getEntities());
 			//double angle =  Math.toDegrees(Math.atan2((double) mouseDeltaX, (double) mouseDeltaY)) + 180;
 			//System.out.println(angle);
 			//direction = (int) (angle % 90.0);

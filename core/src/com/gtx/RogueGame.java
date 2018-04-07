@@ -11,8 +11,8 @@ import com.badlogic.gdx.math.Vector2;
 public class RogueGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	
-	OrthographicCamera camera;
-	float cameraZoom = .07f;
+	public static OrthographicCamera camera;
+	public static float cameraZoom = .07f;
 	
 	GameMap gameMap;
 	
@@ -62,7 +62,7 @@ public class RogueGame extends ApplicationAdapter {
 		
 		batch.end();
 		
-		System.out.println("Score: " + score);
+		//System.out.println("Score: " + score);
 	}
 	
 	@Override
