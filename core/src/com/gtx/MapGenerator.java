@@ -49,7 +49,7 @@ public class MapGenerator {
 			if (numHostiles > maxNumberOfHostiles) {
 				break;
 			}
-			entities.add( new Entity( new Vector2(map[(int)position.y][(int)position.x].position), new Vector2(.5f,.5f), EntityType.GOBLIN ) );
+			entities.add( new Entity( new Vector2(map[(int)position.y][(int)position.x].position), new Vector2(.9f,.9f), EntityType.GOBLIN ) );
 			numHostiles++;	
 		}
 		
@@ -58,15 +58,14 @@ public class MapGenerator {
 	
 	public static Tile[][] generateMap(int mapWidth, int mapHeight, int seed) {
 		
-		int maxTries = 300;
+		int maxTries = 5;
 		boolean done = false;
 		Tile[][] ret = null;
+		rand = new Random(seed);
 		
 		while (!done) {
 			try {
-				int tries = 1;
-				
-				rand = new Random(seed);
+				int tries = 1;								
 				
 				TileType[][] map = new TileType[mapHeight][mapWidth];
 				
@@ -75,9 +74,7 @@ public class MapGenerator {
 				Vector2 maxRoomSize = new Vector2( 8,8 );
 				int numTriesToPlaceRoom = 150;
 				
-				int numTriesToPlaceMaze = 10;
-				
-				float chanceToKeepWall = .9f;
+				int numTriesToPlaceMaze = 20;
 				
 				fillWithWalls(map);
 				fillWithRooms(map, minRoomSize, maxRoomSize, numTriesToPlaceRoom);
@@ -89,8 +86,9 @@ public class MapGenerator {
 				
 				TileType[][] mapCopy = cloneMap(map);
 				while (!areRoomsConnected(mapCopy)) {
+
 					mapCopy = cloneMap(map);
-					connectRoomsWithMaze(mapCopy, chanceToKeepWall);
+					connectRoomsWithMaze(mapCopy);
 					tries++;
 					if (tries > maxTries)
 						throw new Exception();
@@ -295,20 +293,36 @@ public class MapGenerator {
 		return null;
 	}
 	
-	private static void connectRoomsWithMaze(TileType[][] map, float chanceToUnmarkWall) {
-		int width = map[0].length;
-		int height = map.length;
-		boolean[][] roomTiles = findRoomTiles(map);
-		boolean[][] sharedWalls = findAdjacentWalls(map, roomTiles);
-		sharedWalls = unmarkRandomly(sharedWalls, chanceToUnmarkWall);
+	private static void connectRoomsWithMaze(TileType[][] map) {
+
+		Vector2 roomTile = findTile(map, TileType.GROUND);
 		
-		for (int row = 0; row < height; row++) {
-			for (int col = 0; col < width; col++) {
-				if (sharedWalls[row][col])
-					map[row][col] = TileType.GROUND;
+		while(true) {
+			boolean[][] sharedWalls = fillFindAdjacentWalls(map, roomTile);
+			ArrayList<Vector2> potentialHoles = positionsFromBools(sharedWalls);
+			
+			if (potentialHoles.size() != 0) {
+				Vector2 hole = potentialHoles.remove(potentialHoles.size() - 1);
+				map[(int)hole.y][(int)hole.x] = TileType.GROUND;
+			} else {
+				break;
 			}
 		}
 		
+	}
+	
+	private static Vector2 findTrue(boolean[][] map) {
+		int width = map[0].length;
+		int height = map.length;
+		
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				if (map[row][col])
+					return new Vector2(col, row);
+			}
+		}
+		
+		return null;
 	}
 	
 	private static boolean[][] fillFindAdjacentWalls(TileType[][] map, Vector2 startPos) {
@@ -365,25 +379,29 @@ public class MapGenerator {
 		for (int row = 0; row < height; row++) {
 			for (int col = 0; col < width; col++) {
 				if (map[row][col] == TileType.WALL && numValidSurroundingPos( new Vector2(col, row) , width, height, connectedTiles) > 0 && numValidSurroundingPos( new Vector2(col, row) , width, height, notConnectedTiles) > 0)
-					notConnectedTiles[row][col] = false;
+					ret[row][col] = true;
 			}
-		}
-		
-		return null;
+		}		
+				
+		return ret;
 	}
 	
-	private static boolean[][] unmarkRandomly(boolean[][] bools, float chance) {
+	private static ArrayList<Vector2> positionsFromBools(boolean[][] bools) {
 		int width = bools[0].length;
 		int height = bools.length;
 		
+		List<Vector2> positions = new ArrayList<Vector2>();
+		
 		for (int row = 0; row < height; row++) {
 			for (int col = 0; col < width; col++) {
-				if (bools[row][col] && rand.nextDouble() < chance)
-					bools[row][col] = false;
+				if (bools[row][col])
+					positions.add( new Vector2(col, row) );
 			}
 		}
 		
-		return bools;
+		Collections.shuffle(positions);
+		
+		return (ArrayList<Vector2>) positions;
 	}
 	
 	private static boolean[][] findAdjacentWalls(TileType[][] map, boolean[][] checkMe) {
