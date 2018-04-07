@@ -34,11 +34,11 @@ public class MapGenerator {
 			}
 		}
 		
-		System.out.println(positions.size());
+
 		Collections.shuffle(positions);
 		Vector2 tilePos = positions.remove(positions.size()-1);
 		
-		hero.setPosition( map[(int)tilePos.y][(int)tilePos.x].position );
+		hero.setPosition( new Vector2(map[(int)tilePos.y][(int)tilePos.x].position) );
 		
 		Collection<Entity> entities = new ArrayList<Entity>();
 		entities.add(hero);
@@ -49,7 +49,7 @@ public class MapGenerator {
 			if (numHostiles > maxNumberOfHostiles) {
 				break;
 			}
-			entities.add( new Entity( map[(int)position.y][(int)position.x].position, new Vector2(.5f,.5f), EntityType.GOBLIN ) );
+			entities.add( new Entity( new Vector2(map[(int)position.y][(int)position.x].position), new Vector2(.5f,.5f), EntityType.GOBLIN ) );
 			numHostiles++;	
 		}
 		
