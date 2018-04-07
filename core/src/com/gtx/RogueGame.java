@@ -20,7 +20,9 @@ public class RogueGame extends ApplicationAdapter {
     
     
 	public static OrthographicCamera camera;
-	public static float cameraZoom = .07f;
+	public static float defaultZoom = .07f;
+	
+	public static float cameraZoom = defaultZoom;
 	
 	public static final int SPEED = 4;
 	public static final int GOBLIN_VIEW_DISTANCE = 6;
@@ -28,6 +30,9 @@ public class RogueGame extends ApplicationAdapter {
 	GameMap gameMap;
 	
 	public static int score = 0;
+	int defaultWidth;
+	int defaultHeight;
+	
 	
 	@Override
 	public void create () {
@@ -35,14 +40,10 @@ public class RogueGame extends ApplicationAdapter {
 		uiBatch = new SpriteBatch();
 				
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.zoom = cameraZoom;
-		camera.translate(-Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2);
-		camera.update();
-		
 		ui = new OrthographicCamera();
-		ui.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		ui.update();
+		defaultHeight = Gdx.graphics.getHeight();
+		defaultWidth = Gdx.graphics.getWidth();
+		updateCameras();
 		
 		overlay = new Texture("../core/assets/fog.png");
 
@@ -96,7 +97,11 @@ public class RogueGame extends ApplicationAdapter {
 		
 		gameMap.render(uiBatch);
 
-		uiBatch.draw( overlay, ui.position.x - Gdx.graphics.getWidth()/2 , ui.position.y - Gdx.graphics.getHeight()/2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		uiBatch.draw( overlay, 
+				ui.position.x - Gdx.graphics.getWidth()/2 , 
+				ui.position.y - Gdx.graphics.getHeight()/2,
+				Gdx.graphics.getWidth(), 
+				Gdx.graphics.getHeight());
 		//uiBatch.draw( overlay, camera.position.x , camera.position.y);
 		
 
@@ -105,6 +110,29 @@ public class RogueGame extends ApplicationAdapter {
 		uiBatch.end();
 
 
+	}
+	
+	private void updateCameras() {
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.zoom = cameraZoom;
+		camera.translate(-Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2);
+		camera.update();
+		
+		ui.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		ui.update();
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		float widthRatio =  (float)   defaultWidth / (float) width;
+		float heightRatio =  (float)     defaultHeight / (float) height;
+		if ( widthRatio < heightRatio) {
+			RogueGame.cameraZoom = RogueGame.defaultZoom * widthRatio;
+		} else {
+			RogueGame.cameraZoom = RogueGame.defaultZoom * heightRatio;
+		}
+		updateCameras();
+		
 	}
 	
 	@Override
