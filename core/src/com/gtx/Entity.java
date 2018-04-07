@@ -46,6 +46,8 @@ public class Entity extends GameObject{
 		float oldx = position.x;
 		float oldy = position.y;
 		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+		int x = (int)Math.round(position.x);
+		int y = (int)Math.round(position.y);
 		if(handleCollisions(deltaTime, map, oldx, oldy)) {
 			position.add(0, velocity.y * deltaTime);
 			if(handleCollisions(deltaTime, map, oldx, oldy)) {
@@ -114,24 +116,32 @@ public class Entity extends GameObject{
 			}
 		}
 		for (Tile obstacle : getAdjacentTiles(position, map)) {
-			if (obstacle.getTileType() == TileType.WALL && 
-					box.intersects(obstacle.getBoundingBox())){				
-				collide(obstacle);
+			if (obstacle.getTileType() == TileType.WALL) {
+				System.out.println("Wall");
+				if( box.intersects(obstacle.getBoundingBox())){	
+					System.out.println("intersects");
+					collide(obstacle);
+				}
 			}
 		}
 	}
 	
 	private Collection<Tile> getAdjacentTiles(Vector2 position, GameMap map) {
-		int x = Math.round(position.x);
-		int y = Math.round(position.y);
-		int startx = x > 0 ? x - 1 : x;
+		int x = (int)Math.floor(position.x);
+		int y = (int)Math.floor(position.y);
+		Collection<Tile> adjacents = new ArrayList<Tile>();
+		/*int startx = x > 0 ? x - 1 : x;
 		int endx = x < map.mapSize.x - 1 ? x + 1 : x;
 		int starty = y > 0 ? y = 1 : y;
 		int endy = y < map.mapSize.y - 1 ? y + 1 : x;
-		Collection<Tile> adjacents = new ArrayList<Tile>();
 		for (x = startx; x <= endx; x++) {
 			for (y = starty; y<=endy; y++) {
 				adjacents.add(map.map[x][y]);
+			}
+		}*/
+		for (int i = x-1; i <= x+1; i++) {
+			for (int j = y - 1; j <= y + 1; j++) {
+				adjacents.add(map.map[j][i]);
 			}
 		}
 		return adjacents;

@@ -20,7 +20,7 @@ public class RogueGame extends ApplicationAdapter {
 	OrthographicCamera camera;
 	OrthographicCamera textCamera;
 
-	float cameraZoom = .03f;
+	float cameraZoom = .07f;
 	
 	GameMap gameMap;
 	BitmapFont font;
@@ -40,8 +40,7 @@ public class RogueGame extends ApplicationAdapter {
 		textCamera.zoom = 0.6f;
 		textCamera.update();
 
-		
-		gameMap = new GameMap( new Vector2(25,25) );
+		gameMap = new GameMap( new Vector2(30,30) );
 		
 		Gdx.input.setInputProcessor( gameMap );
 		

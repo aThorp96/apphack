@@ -1,16 +1,16 @@
 package com.gtx;
 
+import java.util.List;
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class GameMap implements InputProcessor{
 	
@@ -26,10 +26,26 @@ public class GameMap implements InputProcessor{
 		entities = new ArrayList<Entity>();
 		this.mapSize = mapSize;
 		
-		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y);
-		
-		entities.add( new Entity(new Vector2(), new Vector2(0.5f,0.5f), EntityType.PLAYER) );
+		map = MapGenerator.generateMap((int)this.mapSize.x, (int)this.mapSize.y, (int) new Date().getTime());
+		List<Vector2> floorTiles = getFloorTiles();
+		Vector2 heroStart = randomFromList(floorTiles);
+		entities.add( new Entity(new Vector2(5, 5), new Vector2(0.5f, 0.5f), EntityType.PLAYER) );
 
+	}
+	
+	private List<Vector2> getFloorTiles(){
+		List<Vector2> floorTiles = new ArrayList<Vector2>();
+		for (int row = 0; row < map.length; row++) {
+			for (int col = 0; col < map[0].length; col++) {
+				if (map[row][col].getTileType() == TileType.GROUND) {
+					floorTiles.add(new Vector2(row, col));
+				}
+			}
+		}
+		return floorTiles;
+	}
+	private <T> T randomFromList(List<T> list) {
+		return list.remove(new Random().nextInt(list.size()));
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -43,8 +59,6 @@ public class GameMap implements InputProcessor{
 		for (Entity entity : entities) {
 			entity.render(batch);
 		}
-		
-		
 	}
 	
 	
