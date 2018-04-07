@@ -18,6 +18,7 @@ public class GameMap implements InputProcessor{
 	Tile[][] map;
 	Collection<Entity> entities;
 	Vector2 mapSize;
+	Hero hero;
 	
 	private HashSet<Integer> pressedKeys;
 	
@@ -116,7 +117,7 @@ public class GameMap implements InputProcessor{
 	
 	private void applyInputToPlayer(Entity player) {		
 		
-		int speed = 4;
+		int speed = player.getSpeed();
 		
 		if (pressedKeys.contains(Keys.W)) {
 			player.setVelocity(player.getVelocity().x, speed);
@@ -211,5 +212,8 @@ public class GameMap implements InputProcessor{
 	
 	public Collection<Entity> getEntities() {
 		return this.entities;
+	}
+	public Hero getHero() {
+		return hero;
 	}
 }

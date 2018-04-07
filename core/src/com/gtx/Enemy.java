@@ -35,6 +35,15 @@ public class Enemy extends Entity {
 	}
 
 	public void update(float deltaTime, GameMap map) {
+		Hero hero = map.getHero();
+		Vector2 toHero = new Vector2(hero.position);
+		toHero.sub(position);
+		double distanceToHero = Math.sqrt(toHero.x * toHero.x + toHero.y * toHero.y);
+		if (distanceToHero < 6) {
+			toHero.setLength(getSpeed());
+			velocity.set(toHero);
+		}
+		
 		super.update(deltaTime, map);
 		move();
 		// Determine which quartile the enemy is moving in.
@@ -50,15 +59,11 @@ public class Enemy extends Entity {
 		} else {
 			direction = 2; // down
 		}
-	
 	}
 	
 	public void move() {
 		Random r = new Random();
 		int rand = r.nextInt(4);
-		
-		
-		
 	}
 	
 }

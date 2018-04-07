@@ -59,7 +59,7 @@ public class Hero extends Entity {
 				direction = 2;			// down
 			}
 		}
-		System.out.println(direction);
+		//System.out.println(direction);
 	}
 	
 }
