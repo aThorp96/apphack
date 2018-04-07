@@ -25,6 +25,18 @@ public class Entity extends GameObject{
 		return entityType;
 	}
 	
+	public Vector2 getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(Vector2 velocity) {
+		this.velocity = velocity;
+	}
+	
+	public void setVelocity(float x, float y) {
+		this.velocity.set(x, y);
+	}
+
 	public void update(float deltaTime) {
 		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
 	}
