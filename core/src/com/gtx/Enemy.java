@@ -39,9 +39,15 @@ public class Enemy extends Entity {
 		Vector2 toHero = new Vector2(hero.position);
 		toHero.sub(position);
 		double distanceToHero = Math.sqrt(toHero.x * toHero.x + toHero.y * toHero.y);
-		if (distanceToHero < 6) {
+		if (distanceToHero < RogueGame.GOBLIN_VIEW_DISTANCE) {
 			toHero.setLength(getSpeed());
 			velocity.set(toHero);
+		} else {
+			velocity.set(new Vector2());
+		}
+		if (distanceToHero < Weapon.SWORD_LENGTH) {
+			weapon.attack(position, toHero, map.getHero());
+			System.out.println(distanceToHero + ", " + map.getHero().hp);
 		}
 		
 		super.update(deltaTime, map);
