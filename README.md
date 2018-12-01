@@ -9,7 +9,7 @@ To run:
 * From command line
     1. Install gradle (if not previously installed)
     2. Clone repository
-    3. From the project's root directory, run `gradele -q run`. 
+    3. From the project's root directory, run `gradle -q run`. 
 
 To play:
 1. Navigate with WASD.
