@@ -1,5 +1,7 @@
 package com.gtx;
 
+import java.io.PrintWriter;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -44,8 +46,8 @@ public class RogueGame extends ApplicationAdapter {
 		defaultHeight = Gdx.graphics.getHeight();
 		defaultWidth = Gdx.graphics.getWidth();
 		updateCameras();
-		
-		overlay = new Texture("../core/assets/fog.png");
+
+		overlay = new Texture("fog.png");
 
 
 		gameMap = new GameMap( new Vector2(40,40) );

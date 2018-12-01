@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum EntityType {
-	PLAYER(16,16,"../core/assets/hero.png"),
-	GOBLIN(16,16,"../core/assets/GoblinTiled.png");
+	PLAYER(16,16,"hero.png"),
+	GOBLIN(16,16,"GoblinTiled.png");
 	
 	private TextureRegion[][] textures;
 	

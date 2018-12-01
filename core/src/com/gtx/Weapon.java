@@ -70,7 +70,7 @@ public class Weapon {
 	private boolean attacking = false;
 	private int frames = 0;
 	private static final int ANIMATION_LENGTH = 25;
-	private static TextureRegion[][] texture = TextureRegion.split(new Texture("../core/assets/swoosh.png"), 16, 16);
+	private static TextureRegion[][] texture = TextureRegion.split(new Texture("swoosh.png"), 16, 16);
 	
 	public void render(SpriteBatch batch) {
 		
